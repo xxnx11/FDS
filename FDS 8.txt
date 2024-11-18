@@ -1,0 +1,152 @@
+#include <iostream>
+#include <string>
+using namespace std;
+class node {
+public:
+    node *next;
+    node *prev;
+    int seat;
+    string id;
+    int status; 
+};
+class cinemax {
+public:
+    node *head, *tail,*nullptr;
+    
+    cinemax() {
+        head = nullptr;
+        tail = nullptr;
+    }
+    
+    void create_list();
+    void display();
+    void book();
+    void avail();
+    void cancel();
+};
+
+void cinemax::create_list() {
+    head = new node;
+    head->seat = 1;
+    head->status = 0;
+    head->id = "null";
+    tail = head;
+
+    for (int i = 2; i <= 70; i++) {
+        node *p = new node;
+        p->seat = i;
+        p->status = 0;
+        p->id = "null";
+        tail->next = p;
+        p->prev = tail;
+        tail = p;
+    }
+    tail->next = head;
+    head->prev = tail;
+}
+
+void cinemax::display() {
+    cout << "-----------------------------------------------------------------------" << endl;
+    cout << "Screen this way" << endl;
+    cout << "-----------------------------------------------------------------------" << endl;
+    
+    node *temp = head;
+    int count = 0;
+    do {
+        cout << (temp->seat < 10 ? "SO" : "S") << temp->seat << ": ";
+        cout << (temp->status == 0 ? "|___|" : "|_B_|");
+        
+        count++;
+        if (count % 7 == 0) {
+            cout << endl;
+        }
+        
+        temp = temp->next;
+    } while (temp != head);
+    cout << endl;
+}
+
+void cinemax::book() {
+    int x;
+    string y;
+    cout << "\nEnter seat number to be booked (1-70): ";
+    cin >> x;
+    cout << "Enter your ID number: ";
+    cin >> y;
+    if (x < 1 || x > 70) {
+        cout << "Enter correct seat number to book (1-70)\n";
+        return;
+    }
+    node *temp = head;
+    for (int i = 1; i < x; i++) {
+        temp = temp->next;
+    }  
+    if (temp->status == 1) {
+        cout << "Seat already booked!\n";
+    } else {
+        temp->status = 1;
+        temp->id = y;
+        cout << "Seat " << x << " booked!\n";
+    } }
+void cinemax::cancel() {
+    int x;
+    string y;
+    cout << "Enter seat number to cancel booking (1-70): ";
+    cin >> x;
+    cout << "Enter your ID: ";
+    cin >> y;
+    if (x < 1 || x > 70) {
+        cout << "Enter correct seat number to cancel (1-70)\n";
+        return;
+    }
+    node *temp = head;
+    for (int i = 1; i < x; i++) {
+        temp = temp->next;
+    }    
+    if (temp->status == 0) {
+        cout << "Seat not booked yet!\n";
+    } else {
+        if (temp->id == y) {
+            temp->status = 0;
+            temp->id = "null";
+            cout << "Seat cancelled!\n";
+        } else {
+            cout << "Wrong User ID! Seat cannot be cancelled!\n";
+        } }}
+void cinemax::avail() {
+    cout << "\nAvailable Seats:\n";
+    node *temp = head;
+    do {
+        if (temp->status == 0) {
+            cout << (temp->seat < 10 ? "SO" : "S") << temp->seat << " ";
+        }
+        temp = temp->next;
+    } while (temp != head);
+    cout << endl;
+}
+int main() {
+    cinemax obj;
+    obj.create_list();
+    int ch;
+    char c = 'y'; 
+    while (c == 'y') {
+        obj.display();
+        cout << "\n************************************************************\n";
+        cout << "GAURAV KAMBLE MOVIES INDUSTRIES\n";
+        cout << "**************************************************************\n";
+        cout << "Enter choice:\n1. Current seat status\n2. Book seat\n3. Available seats\n4. Cancel seat\n";
+        cin >> ch;
+        switch (ch) {
+            case 1:obj.display();
+                       break;
+            case 2:obj.book();
+                      break;
+            case 3:obj.avail();
+                    break;
+            case 4:obj.cancel();
+                     break;
+            default:cout << "Wrong choice input\n";  }
+        cout << "\nDo you want to perform any other operation (y/n)? ";
+        cin >> c; }
+    return 0;
+}
